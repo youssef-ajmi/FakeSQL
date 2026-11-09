@@ -35,6 +35,7 @@ export function ConsolePanel({ entries }: ConsolePanelProps) {
       <div className="panel-empty">
         <Terminal size={24} />
         <p>La console affichera les messages d'exécution.</p>
+        <span className="panel-hint">Ctrl+Enter pour lancer une requête</span>
       </div>
     );
   }

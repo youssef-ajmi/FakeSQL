@@ -53,6 +53,7 @@ export interface HistoryEntry {
   query: string;
   success: boolean;
   message: string;
+  elapsedMs?: number;
 }
 
 export interface CreateColumnInput {

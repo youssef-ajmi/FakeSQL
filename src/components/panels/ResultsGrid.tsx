@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CheckCircle2,
   Clock,
@@ -18,6 +18,18 @@ interface ResultsGridProps {
 }
 
 type SortState = { column: number; direction: "asc" | "desc" } | null;
+
+/** entier or reel values right-align and color like numbers. */
+const NUMERIC_RE = /^-?\d+(?:\.\d+)?$/;
+
+async function copyText(value: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(value);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 function escapeCsvValue(value: string): string {
   if (/["\r\n,;]/.test(value)) {
@@ -44,7 +56,7 @@ function sortedRows(rows: string[][], sort: SortState): string[][] {
   if (!sort) return rows;
   const { column, direction } = sort;
   const factor = direction === "asc" ? 1 : -1;
-  const numeric = rows.every((row) => /^-?\d+$/.test(row[column] ?? ""));
+  const numeric = rows.every((row) => NUMERIC_RE.test(row[column] ?? ""));
   return [...rows].sort((a, b) => {
     const left = a[column] ?? "";
     const right = b[column] ?? "";
@@ -92,6 +104,13 @@ interface ResultSectionProps {
 function ResultSection({ result, index }: ResultSectionProps) {
   const [sort, setSort] = useState<SortState>(null);
   const [exportStatus, setExportStatus] = useState<string | null>(null);
+  const [copiedCell, setCopiedCell] = useState<{ row: number; col: number } | null>(null);
+
+  useEffect(() => {
+    if (!copiedCell) return;
+    const timer = setTimeout(() => setCopiedCell(null), 1200);
+    return () => clearTimeout(timer);
+  }, [copiedCell]);
 
   if (!result.success) {
     return (
@@ -203,12 +222,23 @@ function ResultSection({ result, index }: ResultSectionProps) {
                 <td className="rownum">{rowIndex + 1}</td>
                 {result.columns?.map((column, columnIndex) => {
                   const value = row[columnIndex] ?? "";
-                  const numeric = /^-?\d+$/.test(value);
+                  const numeric = NUMERIC_RE.test(value);
+                  const copied =
+                    copiedCell?.row === rowIndex && copiedCell?.col === columnIndex;
                   return (
                     <td
                       key={`${rowIndex}-${column}`}
-                      className={numeric ? "numeric" : ""}
-                      title={value}
+                      className={`${numeric ? "numeric" : ""} ${copied ? "copied" : ""}`}
+                      title={
+                        copied
+                          ? "Copié dans le presse-papiers"
+                          : "Cliquer pour copier la valeur"
+                      }
+                      onClick={() => {
+                        void copyText(value).then((done) => {
+                          if (done) setCopiedCell({ row: rowIndex, col: columnIndex });
+                        });
+                      }}
                     >
                       {value}
                     </td>

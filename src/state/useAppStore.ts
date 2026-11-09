@@ -89,6 +89,10 @@ export function useAppStore() {
   const [consoleEntries, setConsoleEntries] = useState<ConsoleEntry[]>([]);
   const [history, setHistory] = useState<HistoryEntry[]>(loadHistory);
   const [bottomTab, setBottomTab] = useState<BottomTab>("console");
+  const [cursor, setCursor] = useState<{ line: number; column: number }>({
+    line: 1,
+    column: 1,
+  });
 
   const addConsole = useCallback((kind: ConsoleKind, text: string) => {
     setConsoleEntries((previous) => [
@@ -98,14 +102,14 @@ export function useAppStore() {
   }, []);
 
   const addHistory = useCallback(
-    (query: string, success: boolean, message: string) => {
+    (query: string, success: boolean, message: string, elapsedMs: number) => {
       setHistory((previous) => {
         // Collapse consecutive identical runs instead of flooding the list.
         if (previous[0]?.query === query) {
           return previous;
         }
         const next = [
-          { id: uid(), time: clock(), query, success, message },
+          { id: uid(), time: clock(), query, success, message, elapsedMs },
           ...previous,
         ].slice(0, 100);
         localStorage.setItem(HISTORY_KEY, JSON.stringify(next));
@@ -275,6 +279,7 @@ export function useAppStore() {
             target.query,
             allSuccess,
             executed[executed.length - 1].message ?? "",
+            executed.reduce((total, result) => total + result.elapsedMs, 0),
           );
           // The results pane shows message cards for failed statements too.
           setBottomTab("results");
@@ -358,6 +363,11 @@ export function useAppStore() {
       ? activeResults[activeResults.length - 1]
       : null;
 
+  // A newly opened tab's editor reports its own position; until then 1:1.
+  useEffect(() => {
+    setCursor({ line: 1, column: 1 });
+  }, [activeTabId]);
+
   return {
     workspace,
     tables,
@@ -370,6 +380,8 @@ export function useAppStore() {
     consoleEntries,
     history,
     bottomTab,
+    cursor,
+    setCursor,
     setBottomTab,
     setActiveTabId,
     openFolder,

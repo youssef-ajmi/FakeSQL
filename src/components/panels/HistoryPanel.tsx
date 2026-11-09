@@ -36,8 +36,10 @@ export function HistoryPanel({ history, onOpen, onRerun, onClear }: HistoryPanel
 
       <div className="history-list">
         {history.length === 0 && (
-          <div className="tree-empty">
-            <p>Les requêtes exécutées apparaîtront ici.</p>
+          <div className="panel-empty">
+            <Clock size={22} />
+            <p>Aucune requête exécutée pour le moment.</p>
+            <span className="panel-hint">Ctrl+Enter pour lancer une requête</span>
           </div>
         )}
 
@@ -46,6 +48,9 @@ export function HistoryPanel({ history, onOpen, onRerun, onClear }: HistoryPanel
             <div className="history-top">
               <span className={`history-dot ${entry.success ? "success" : "error"}`} />
               <span className="history-time">{entry.time}</span>
+              {entry.elapsedMs != null && (
+                <span className="history-ms">{entry.elapsedMs} ms</span>
+              )}
               <div className="history-actions">
                 <button
                   type="button"

@@ -3,6 +3,8 @@ import {
   ChevronDown,
   ChevronRight,
   Database,
+  FolderOpen,
+  FolderSearch,
   Hash,
   KeyRound,
   Plus,
@@ -19,6 +21,7 @@ interface TablesPanelProps {
   tables: TableInfo[];
   hasWorkspace: boolean;
   onRefresh: () => void;
+  onOpenFolder: () => void;
   onOpenTable: (name: string) => void;
   onDeleteTable: (name: string) => void;
   onCreateTable: () => void;
@@ -28,6 +31,7 @@ export function TablesPanel({
   tables,
   hasWorkspace,
   onRefresh,
+  onOpenFolder,
   onOpenTable,
   onDeleteTable,
   onCreateTable,
@@ -91,13 +95,20 @@ export function TablesPanel({
           <div className="tree-empty">
             {hasWorkspace ? (
               <>
+                <FolderSearch size={20} className="tree-empty-icon" />
                 <p>Aucune table dans ce workspace.</p>
                 <button type="button" className="secondary-button" onClick={onCreateTable}>
                   <Plus size={13} /> Créer une table
                 </button>
               </>
             ) : (
-              <p>Ouvrez un dossier workspace pour voir vos tables.</p>
+              <>
+                <FolderSearch size={20} className="tree-empty-icon" />
+                <p>Ouvrez un dossier workspace pour voir vos tables.</p>
+                <button type="button" className="secondary-button" onClick={onOpenFolder}>
+                  <FolderOpen size={13} /> Ouvrir un dossier
+                </button>
+              </>
             )}
           </div>
         )}

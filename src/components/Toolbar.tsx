@@ -52,6 +52,11 @@ export function Toolbar({
         >
           <SquarePlus size={17} />
         </button>
+      </div>
+
+      <div className="toolbar-separator" />
+
+      <div className="toolbar-group">
         <button
           type="button"
           className="icon-button"
@@ -87,10 +92,15 @@ export function Toolbar({
 
       <div className="toolbar-spacer" />
 
-      <div className="workspace-pill" title={workspace ?? "Aucun dossier ouvert"}>
+      <button
+        type="button"
+        className="workspace-pill clickable"
+        title={workspace ? "Changer de workspace (Ctrl+O)" : "Ouvrir un workspace (Ctrl+O)"}
+        onClick={onOpenFolder}
+      >
         <Database size={13} />
         <span>{workspaceLabel(workspace)}</span>
-      </div>
+      </button>
     </div>
   );
 }

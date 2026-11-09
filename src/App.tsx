@@ -112,6 +112,7 @@ export default function App() {
               tables={tables}
               hasWorkspace={Boolean(workspace)}
               onRefresh={() => void refreshTables()}
+              onOpenFolder={() => void openFolder()}
               onOpenTable={openTable}
               onDeleteTable={(name) => void removeTable(name)}
               onCreateTable={() => setShowCreate(true)}
@@ -144,6 +145,7 @@ export default function App() {
                         inactive={blocked}
                         onChange={(query) => updateQuery(activeTab.id, query)}
                         onRun={() => void runTab(activeTab.id)}
+                        onCursor={(position) => store.setCursor(position)}
                       />
                     )}
                   </>
@@ -185,6 +187,7 @@ export default function App() {
         tableCount={tables.length}
         result={activeResult}
         running={running}
+        cursor={store.cursor}
       />
 
       {showCreate && (

@@ -1061,9 +1061,11 @@
   align-items: center;
   justify-content: center;
   height: 100%;
+  min-height: 0;
   padding: 32px;
   background: radial-gradient(circle at 50% 30%, #262b34 0%, #1e1f22 55%);
   text-align: center;
+  overflow-y: auto;
 }
 
 .welcome-logo {
@@ -1101,33 +1103,6 @@
 
 .welcome-hint code {
   color: var(--orange);
-}
-
-.welcome-examples {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  width: min(560px, 100%);
-  margin-top: 30px;
-  text-align: left;
-}
-
-.welcome-examples h2 {
-  margin: 0 0 4px;
-  color: var(--text-dim);
-  font-size: 11px;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-}
-
-.welcome-examples code {
-  padding: 7px 10px;
-  overflow-x: auto;
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  background: var(--panel-alt);
-  color: #a9b7c6;
-  font-size: 11.5px;
 }
 
 /* Buttons */
@@ -1476,4 +1451,225 @@
 
 .status-item.error {
   color: var(--red);
+}
+
+/* Disable states and affordances */
+
+.icon-button:disabled {
+  color: #454850;
+  cursor: default;
+}
+
+.workspace-pill.clickable {
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.workspace-pill.clickable:hover {
+  color: var(--text-strong);
+  border-color: var(--border-strong);
+  background: #2f3136;
+}
+
+.status-item.mono {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.2px;
+}
+
+/* Tree empty states with icons and CTAs */
+
+.tree-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.tree-empty-icon {
+  color: #4b5059;
+  margin-bottom: 4px;
+}
+
+/* History duration badge */
+
+.history-ms {
+  padding: 0 5px;
+  border-radius: 7px;
+  background: #393b40;
+  color: var(--text-muted);
+  font-size: 9.5px;
+  letter-spacing: 0.2px;
+}
+
+/* Results: click-to-copy cells */
+
+.results-table tbody td {
+  cursor: copy;
+}
+
+.results-table tbody td.rownum,
+.results-table tbody td.empty-cell {
+  cursor: default;
+}
+
+.results-table tbody td.copied {
+  background: #223527;
+  color: #b7e9c0;
+}
+
+/* Welcome: types sheet, copyable examples, shortcuts */
+
+.welcome-types {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 132px);
+  gap: 6px;
+  justify-content: center;
+  margin-top: 26px;
+}
+
+.welcome-type {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel-alt);
+  text-align: left;
+}
+
+.welcome-type .type-name {
+  color: var(--orange);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+}
+
+.welcome-type .type-example {
+  color: var(--cyan);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  white-space: nowrap;
+}
+
+.welcome-type > span {
+  color: var(--text-dim);
+  font-size: 10px;
+}
+
+.welcome-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: min(640px, 100%);
+  margin-top: 18px;
+  text-align: left;
+}
+
+.welcome-panel-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.welcome-panel-head h2 {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 11px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.welcome-hint-inline {
+  color: #4b5059;
+  font-size: 10.5px;
+}
+
+.welcome-example {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 6px 10px 7px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--panel-alt);
+  text-align: left;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.welcome-example:hover {
+  background: #23252a;
+  border-color: #3a3d43;
+}
+
+.welcome-example.copied {
+  border-color: rgba(73, 156, 84, 0.55);
+}
+
+.welcome-example-label {
+  color: var(--text-dim);
+  font-size: 10.5px;
+}
+
+.welcome-example code {
+  color: #a9b7c6;
+  font-size: 11.5px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.welcome-example .copy-mark,
+.welcome-example .copied-mark {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: #26282e;
+  color: var(--text-dim);
+  font-size: 10px;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.welcome-example:hover .copy-mark,
+.welcome-example .copied-mark {
+  opacity: 1;
+}
+
+.welcome-example .copied-mark {
+  color: var(--green);
+  border-color: rgba(73, 156, 84, 0.55);
+}
+
+.welcome-shortcuts {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.welcome-shortcut {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-dim);
+  font-size: 11px;
+}
+
+.welcome-shortcut kbd {
+  padding: 1px 6px;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  background: #1e1f22;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
 }

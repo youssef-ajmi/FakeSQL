@@ -7,9 +7,10 @@ interface StatusBarProps {
   tableCount: number;
   result: QueryResult | null;
   running: boolean;
+  cursor: { line: number; column: number };
 }
 
-export function StatusBar({ workspace, tableCount, result, running }: StatusBarProps) {
+export function StatusBar({ workspace, tableCount, result, running, cursor }: StatusBarProps) {
   return (
     <div className="status-bar">
       <div className="status-left">
@@ -21,6 +22,9 @@ export function StatusBar({ workspace, tableCount, result, running }: StatusBarP
       </div>
 
       <div className="status-right">
+        <span className="status-item mono">
+          Ln {cursor.line}, Col {cursor.column}
+        </span>
         {running && (
           <span className="status-item">
             <Loader2 size={12} className="spin" /> Exécution…

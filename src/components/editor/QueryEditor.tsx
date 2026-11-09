@@ -32,19 +32,29 @@ interface QueryEditorProps {
   inactive?: boolean;
   onChange: (query: string) => void;
   onRun: () => void;
+  onCursor?: (position: { line: number; column: number }) => void;
 }
 
-export function QueryEditor({ query, tables, inactive = false, onChange, onRun }: QueryEditorProps) {
+export function QueryEditor({
+  query,
+  tables,
+  inactive = false,
+  onChange,
+  onRun,
+  onCursor,
+}: QueryEditorProps) {
   const hostRef = useRef<HTMLDivElement | null>(null);
   const viewRef = useRef<EditorView | null>(null);
   const tablesRef = useRef(tables);
   const onChangeRef = useRef(onChange);
   const onRunRef = useRef(onRun);
+  const onCursorRef = useRef(onCursor);
   const inactiveRef = useRef(inactive);
 
   tablesRef.current = tables;
   onChangeRef.current = onChange;
   onRunRef.current = onRun;
+  onCursorRef.current = onCursor;
   inactiveRef.current = inactive;
 
   useEffect(() => {
@@ -97,6 +107,11 @@ export function QueryEditor({ query, tables, inactive = false, onChange, onRun }
         EditorView.updateListener.of((update) => {
           if (update.docChanged) {
             onChangeRef.current(update.state.doc.toString());
+          }
+          if (onCursorRef.current && (update.docChanged || update.selectionSet)) {
+            const head = update.state.selection.main.head;
+            const line = update.state.doc.lineAt(head);
+            onCursorRef.current({ line: line.number, column: head - line.from + 1 });
           }
         }),
       ],
