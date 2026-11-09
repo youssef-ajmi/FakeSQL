@@ -93,10 +93,8 @@ export default function App() {
 
       <Toolbar
         workspace={workspace}
-        running={running}
         onOpenFolder={() => void openFolder()}
         onNewQuery={() => newTab()}
-        onRun={() => void runTab()}
         onRefresh={() => void refreshTables()}
         onCreateTable={() => setShowCreate(true)}
       />
@@ -133,9 +131,11 @@ export default function App() {
                     <EditorTabs
                       tabs={tabs}
                       activeTabId={activeTab?.id ?? ""}
+                      running={running}
                       onSelect={store.setActiveTabId}
                       onClose={closeTab}
                       onNew={() => newTab()}
+                      onRun={() => void runTab(activeTab?.id)}
                     />
                     {activeTab && (
                       <QueryEditor
@@ -174,6 +174,7 @@ export default function App() {
           <Panel defaultSize={20} minSize={12} className="side-panel right-panel">
             <HistoryPanel
               history={history}
+              tables={tables}
               onOpen={(query) => newTab(query)}
               onRerun={(query) => void runText(query)}
               onClear={clearHistory}

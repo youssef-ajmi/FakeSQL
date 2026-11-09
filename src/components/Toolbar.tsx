@@ -1,19 +1,9 @@
-import {
-  Database,
-  FolderOpen,
-  Loader2,
-  Play,
-  Plus,
-  RefreshCw,
-  SquarePlus,
-} from "lucide-react";
+import { Database, FolderOpen, Plus, RefreshCw, SquarePlus } from "lucide-react";
 
 interface ToolbarProps {
   workspace: string | null;
-  running: boolean;
   onOpenFolder: () => void;
   onNewQuery: () => void;
-  onRun: () => void;
   onRefresh: () => void;
   onCreateTable: () => void;
 }
@@ -26,15 +16,17 @@ function workspaceLabel(workspace: string | null) {
 
 export function Toolbar({
   workspace,
-  running,
   onOpenFolder,
   onNewQuery,
-  onRun,
   onRefresh,
   onCreateTable,
 }: ToolbarProps) {
   return (
     <div className="toolbar">
+      <div className="toolbar-brand">
+        <b>FakeSQL</b> Studio
+      </div>
+
       <div className="toolbar-group">
         <button
           type="button"
@@ -77,19 +69,6 @@ export function Toolbar({
         </button>
       </div>
 
-      <div className="toolbar-separator" />
-
-      <button
-        type="button"
-        className="run-button"
-        onClick={onRun}
-        disabled={running || !workspace}
-        title="Exécuter la requête (Ctrl+Enter)"
-      >
-        {running ? <Loader2 size={15} className="spin" /> : <Play size={14} fill="currentColor" />}
-        <span>{running ? "Exécution…" : "Run"}</span>
-      </button>
-
       <div className="toolbar-spacer" />
 
       <button
@@ -104,3 +83,4 @@ export function Toolbar({
     </div>
   );
 }
+

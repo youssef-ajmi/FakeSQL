@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FakeSQL Studio Pro</title>
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#0a0f17; --win:#0e1520; --panel:#121a27; --panel2:#0d141f; --line:rgba(255,255,255,.07); --line2:rgba(255,255,255,.12);
+  --text:#e7ecf4; --mute:#7c889c; --dim:#566177; --acc:#2d7cff; --acc2:#5aa2ff; --hover:rgba(255,255,255,.06);
+  --kw:#4cc9f0; --kw2:#9be564; --str:#c4e65a; --num:#ffd166; --ok:#3ddc84;
+  --font:"Segoe UI Variable","Segoe UI",system-ui,-apple-system,Inter,Roboto,sans-serif;
+  --mono:"Cascadia Code","JetBrains Mono",Consolas,ui-monospace,monospace;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;height:100%;background:#05080d;font:13px/1.4 var(--font);color:var(--text);overflow:hidden;-webkit-font-smoothing:antialiased}
+svg.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--acc2);outline-offset:1px}
+.app{height:100%;display:flex;flex-direction:column;background:
+  radial-gradient(900px 420px at 18% -10%,rgba(45,124,255,.16),transparent 60%),
+  radial-gradient(700px 380px at 100% 110%,rgba(110,70,255,.11),transparent 60%),var(--win);
+  border:1px solid var(--line2);overflow:hidden}
+/* title bar */
+.title{display:flex;align-items:center;height:36px;padding:0 0 0 12px;gap:6px;-webkit-user-select:none;user-select:none}
+.logo{width:18px;height:18px;border-radius:5px;background:linear-gradient(140deg,#4b7bff,#7a4dff);display:grid;place-items:center;font-size:8px;font-weight:700;margin-right:10px;box-shadow:0 0 12px rgba(75,123,255,.5)}
+.menu button{padding:4px 10px;border-radius:6px;color:#cfd6e3}
+.menu button:hover,.menu button.on{background:var(--hover)}
+.sp{flex:1}
+.wc{display:flex;height:100%}
+.wc button{width:46px;display:grid;place-items:center;color:#c9d1de}
+.wc button:hover{background:var(--hover)}.wc .cl:hover{background:#e5484d;color:#fff}
+/* header toolbar */
+.head{display:flex;align-items:center;height:46px;padding:0 14px 0 14px;gap:22px}
+.brand{font-size:20px;font-weight:700;letter-spacing:-.4px;color:#dfe7f5}
+.brand b{background:linear-gradient(90deg,#6ea4ff,#4a8bff);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700}
+.tools{display:flex;align-items:center;gap:2px}
+.tools .sep{width:1px;height:20px;background:var(--line2);margin:0 8px}
+.ib{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:#b9c3d4;transition:background .12s,color .12s}
+.ib:hover{background:var(--hover);color:#fff}.ib:active{transform:scale(.94)}
+.ib[disabled]{opacity:.32;pointer-events:none}.ib.on{background:rgba(45,124,255,.18);color:var(--acc2)}
+/* body */
+.main{flex:1;display:flex;min-height:0;padding:0 0 0 0}
+.rail{width:44px;display:flex;flex-direction:column;align-items:center;padding:6px 0;gap:6px;flex:none}
+.rail .ib{width:34px;height:34px;position:relative}
+.rail .ib.on::before{content:"";position:absolute;left:-5px;top:8px;bottom:8px;width:3px;border-radius:3px;background:var(--acc)}
+.rail.r .ib.on::before{left:auto;right:-5px}
+.panel{background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.012));border:1px solid var(--line);border-radius:12px;min-width:0;display:flex;flex-direction:column}
+.left{width:var(--lw,200px);flex:none;margin:0 0 8px;padding:12px 8px}
+.right{width:var(--rw,172px);flex:none;margin:0 0 8px;padding:12px 8px}
+.center{flex:1;min-width:0;display:flex;flex-direction:column;margin:0 0 8px}
+.sh{display:flex;align-items:center;gap:8px;padding:2px 4px 10px;color:#aeb8ca;font-size:11.5px;letter-spacing:.6px;font-weight:600;text-transform:uppercase}
+.sh .sp{flex:1}.sh button{color:var(--mute)}.sh button:hover{color:#fff}
+.sh .chev{transition:transform .2s}.sh.closed .chev{transform:rotate(-90deg)}
+.select{display:flex;align-items:center;gap:8px;height:34px;padding:0 10px;border-radius:8px;background:var(--panel2);border:1px solid var(--line);color:#d4dbe7;width:100%;text-align:left}
+.select:hover{border-color:var(--line2)}.select span{flex:1}
+.btn2{width:100%;height:34px;margin-top:10px;border-radius:8px;background:rgba(255,255,255,.07);border:1px solid var(--line);color:#e8edf6;transition:.15s}
+.btn2:hover{background:rgba(255,255,255,.11);border-color:var(--line2)}.btn2:active{transform:translateY(1px)}
+.sect{margin-top:16px}.sect .body{padding:2px 4px;color:var(--dim);font-size:12px}
+.dd{position:relative}
+.menu-pop{position:absolute;top:38px;left:0;right:0;background:#17202e;border:1px solid var(--line2);border-radius:8px;padding:4px;z-index:20;box-shadow:0 12px 30px rgba(0,0,0,.5);display:none}
+.menu-pop.show{display:block}.menu-pop button{display:block;width:100%;text-align:left;padding:6px 8px;border-radius:5px}
+.menu-pop button:hover{background:var(--hover)}
+/* resizers */
+.rz{flex:none;display:grid;place-items:center;position:relative;z-index:2}
+.rz.v{width:8px;cursor:col-resize}.rz.h{height:8px;cursor:row-resize}
+.rz::after{content:"";background:var(--dim);border-radius:2px;opacity:.55;transition:.15s}
+.rz.v::after{width:2px;height:16px}.rz.h::after{height:2px;width:16px}
+.rz:hover::after,.rz.drag::after{background:var(--acc2);opacity:1}
+/* editor */
+.editor{flex:1;min-height:120px;display:flex;flex-direction:column;overflow:hidden}
+.tabs{display:flex;align-items:center;height:40px;padding:0 8px 0 4px;border-bottom:1px solid var(--line)}
+.tab{display:flex;align-items:center;gap:8px;height:30px;padding:0 10px;margin-top:6px;border-radius:8px 8px 0 0;background:rgba(255,255,255,.06);border-bottom:2px solid var(--acc);color:#dfe6f2;position:relative;top:1px}
+.tab svg.i{color:var(--ok)}.tab .x{color:var(--mute);display:grid;place-items:center;border-radius:4px;width:16px;height:16px}.tab .x:hover{background:var(--hover);color:#fff}
+.run{display:flex;align-items:center;gap:8px;height:32px;padding:0 16px;border-radius:8px;background:linear-gradient(180deg,#3b86ff,#2468e6);color:#fff;font-weight:500;box-shadow:0 4px 16px rgba(45,124,255,.4),inset 0 1px 0 rgba(255,255,255,.25);transition:.15s}
+.run:hover{filter:brightness(1.1);box-shadow:0 6px 22px rgba(45,124,255,.55),inset 0 1px 0 rgba(255,255,255,.3)}
+.run:active{transform:translateY(1px)}.run.busy svg{animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.code{position:relative;flex:1;display:flex;min-height:0;font:14px/21px var(--mono)}
+.gut{width:48px;padding:12px 0;text-align:right;color:var(--dim);flex:none;overflow:hidden;user-select:none;white-space:pre;padding-right:14px}
+.gut .a{color:#aab6ca}
+.surf{position:relative;flex:1;min-width:0;overflow:hidden}
+.cl-hl{position:absolute;left:0;right:0;height:21px;background:rgba(255,255,255,.04);border-left:2px solid rgba(90,162,255,.5);pointer-events:none}
+#hl,#ed{position:absolute;inset:0;margin:0;padding:12px 16px 12px 6px;font:inherit;letter-spacing:0;white-space:pre;tab-size:2;border:0;overflow:auto}
+#hl{pointer-events:none;color:#e8edf5;overflow:hidden}
+#ed{background:transparent;color:transparent;caret-color:#fff;resize:none;outline:none}
+#ed::selection{background:rgba(45,124,255,.4)}
+.k1{color:var(--kw)}.k2{color:var(--kw2)}.s{color:var(--str)}.v{color:#8fe388}.n{color:var(--num)}
+.mm{position:absolute;right:0;top:0;bottom:0;width:6px;background:rgba(255,255,255,.04)}
+.mm i{position:absolute;right:0;width:6px;top:6px;height:60%;border-radius:3px;background:rgba(255,255,255,.18)}
+/* results */
+.results{height:var(--rh,190px);flex:none;overflow:hidden;min-height:90px;max-height:75%}
+.rt{display:flex;align-items:center;gap:4px;padding:8px 8px 6px}
+.rt button.t{padding:5px 12px;border-radius:7px;color:var(--mute);transition:.12s}
+.rt button.t:hover{color:#fff;background:var(--hover)}.rt button.t.on{background:rgba(255,255,255,.1);color:#fff}
+.pane{display:none;flex:1;overflow:auto;min-height:0}.pane.on{display:block}
+table{border-collapse:collapse;width:100%;min-width:560px}
+th,td{height:30px;padding:0 10px;text-align:left;white-space:nowrap}
+thead th{position:sticky;top:0;background:#182130;color:#e9eef7;font-weight:600;border-bottom:1px solid var(--line);cursor:pointer;user-select:none}
+thead th:hover{background:#1d2738}
+th .so{display:inline-flex;flex-direction:column;gap:1px;float:right;margin-top:6px;opacity:.5}
+th .so i{border:3.5px solid transparent;width:0;height:0}
+th .so i:first-child{border-bottom:4px solid #9fb0cc;border-top:0}th .so i:last-child{border-top:4px solid #9fb0cc;border-bottom:0}
+th.asc .so i:first-child,th.desc .so i:last-child{border-bottom-color:var(--acc2);border-top-color:var(--acc2)}th.asc .so,th.desc .so{opacity:1}
+tbody td{border-bottom:1px solid var(--line);color:#d5dce8;cursor:default}
+tbody td.rn,thead th.rn{width:34px;text-align:center;color:var(--mute);background:#141c29;cursor:default;padding:0}
+tbody tr:hover td:not(.sel){background:rgba(255,255,255,.035)}
+td.sel{background:rgba(45,124,255,.28);outline:1px solid var(--acc);outline-offset:-1px}
+.log{padding:10px 14px;font:12px/1.7 var(--mono);color:#aab6ca}.log b{color:var(--ok);font-weight:500}.log em{color:var(--dim);font-style:normal}
+.plan{padding:12px 16px;font:12px/1.8 var(--mono);color:#b9c4d6}.plan div{padding-left:calc(var(--d)*18px)}.plan span{color:var(--kw)}
+/* right panel */
+.seg{display:flex;padding:3px;border-radius:9px;background:var(--panel2);border:1px solid var(--line);margin-bottom:10px}
+.seg button{flex:1;height:26px;border-radius:6px;color:var(--mute);transition:.15s}
+.seg button.on{background:rgba(255,255,255,.1);color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.hi{display:flex;align-items:center;gap:8px;width:100%;padding:7px 8px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid transparent;color:#dbe2ee;text-align:left;margin-bottom:4px}
+.hi:hover{background:rgba(255,255,255,.09);border-color:var(--line)}.hi svg{color:var(--ok)}
+.hi span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.sc{padding:4px;color:#b9c4d6;font-size:12px;line-height:1.9}.sc small{color:var(--dim);float:right}
+/* status */
+.status{height:28px;display:flex;align-items:center;gap:18px;padding:0 14px;border-top:1px solid var(--line);color:#aab4c5;font-size:12px;background:rgba(0,0,0,.18)}
+.status span{display:flex;align-items:center;gap:6px}.status .sp{flex:1}.status .g{color:var(--ok)}
+.status svg.i{width:13px;height:13px}
+@media (max-width:820px){.rail,.left,.right,.rz.v{display:none}.wc button{width:38px}.head{gap:10px}.tools .hide{display:none}.brand{font-size:17px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="play" viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z"/></symbol>
+<symbol id="save" viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z M8 4v5h7V4 M8 20v-6h8v6"/></symbol>
+<symbol id="trash" viewBox="0 0 24 24"><path d="M5 7h14 M9 7V4h6v3 M7 7l1 13h8l1-13"/></symbol>
+<symbol id="undo" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5 M4 9h10a6 6 0 010 12h-3"/></symbol>
+<symbol id="fmt" viewBox="0 0 24 24"><path d="M4 7h10 M18 7h2 M4 17h2 M10 17h10 M14 4v6 M8 14v6"/></symbol>
+<symbol id="term" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 10l3 2-3 2 M12 15h5"/></symbol>
+<symbol id="gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9L7 7M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></symbol>
+<symbol id="db" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3 3 7 3s7-1.3 7-3V6 M5 12c0 1.7 3 3 7 3s7-1.3 7-3"/></symbol>
+<symbol id="list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+<symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></symbol>
+<symbol id="help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 115 0c0 1.7-2.5 2-2.5 4 M12 17h.01"/></symbol>
+<symbol id="file" viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6z M14 3v5h5 M9 13h7M9 17h7"/></symbol>
+<symbol id="chart" viewBox="0 0 24 24"><path d="M4 4v16h16 M7 15l4-4 3 3 5-6"/></symbol>
+<symbol id="grid" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 10h16M4 15h16M10 5v14"/></symbol>
+<symbol id="clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+<symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="x" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></symbol>
+<symbol id="min" viewBox="0 0 24 24"><path d="M6 12h12"/></symbol>
+<symbol id="max" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1.5"/></symbol>
+<symbol id="bolt" viewBox="0 0 24 24"><path d="M13 3L5 14h6l-1 7 8-11h-6z"/></symbol>
+<symbol id="link" viewBox="0 0 24 24"><circle cx="8" cy="12" r="3"/><path d="M11 12h9M17 12v3"/></symbol>
+<symbol id="branch" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="8" r="2"/><path d="M6 8v8M18 10c0 4-8 2-12 6"/></symbol>
+<symbol id="check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></symbol>
+<symbol id="rows" viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h14"/></symbol>
+</defs></svg>
+
+<div class="app">
+  <div class="title">
+    <div class="logo">S</div>
+    <nav class="menu"><button>File</button><button>Query</button><button>View</button><button>Help</button><button>Tests</button></nav>
+    <div class="sp"></div>
+    <div class="wc"><button title="Minimize"><svg class="i"><use href="#min"/></svg></button><button title="Maximize"><svg class="i"><use href="#max"/></svg></button><button class="cl" title="Close"><svg class="i"><use href="#x"/></svg></button></div>
+  </div>
+
+  <div class="head">
+    <div class="brand"><b>FakeSQL</b> Studio Pro</div>
+    <div class="tools">
+      <button class="ib" id="tRun" title="Run (Ctrl+Enter)"><svg class="i"><use href="#play"/></svg></button>
+      <button class="ib" title="Save"><svg class="i"><use href="#save"/></svg></button>
+      <button class="ib" id="tClear" title="Clear editor"><svg class="i"><use href="#trash"/></svg></button>
+      <span class="sep"></span>
+      <button class="ib" id="tUndo" title="Undo"><svg class="i"><use href="#undo"/></svg></button>
+      <button class="ib" id="tRedo" title="Redo"><svg class="i" style="transform:scaleX(-1)"><use href="#undo"/></svg></button>
+      <span class="sep hide"></span>
+      <button class="ib hide" id="tFmt" title="Format"><svg class="i"><use href="#fmt"/></svg></button>
+      <button class="ib hide" id="tTerm" title="Console"><svg class="i"><use href="#term"/></svg></button>
+      <button class="ib hide" title="Settings"><svg class="i"><use href="#gear"/></svg></button>
+      <span class="sep hide"></span>
+      <button class="ib hide" disabled><svg class="i"><use href="#undo"/></svg></button>
+      <button class="ib hide" disabled><svg class="i" style="transform:scaleX(-1)"><use href="#undo"/></svg></button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="rail">
+      <button class="ib on" title="Database"><svg class="i"><use href="#db"/></svg></button>
+      <button class="ib" title="Outline"><svg class="i"><use href="#list"/></svg></button>
+      <div class="sp"></div>
+      <button class="ib" title="Search"><svg class="i"><use href="#search"/></svg></button>
+      <button class="ib" title="Help"><svg class="i"><use href="#help"/></svg></button>
+      <button class="ib" title="Settings"><svg class="i"><use href="#gear"/></svg></button>
+    </div>
+
+    <aside class="panel left" id="left">
+      <div class="sh" data-fold="dbBody"><svg class="i" style="width:15px"><use href="#db"/></svg>Database<span class="sp"></span><button><svg class="i chev"><use href="#chev"/></svg></button></div>
+      <div id="dbBody">
+        <div class="dd">
+          <button class="select" id="sel"><svg class="i" style="width:15px"><use href="#grid"/></svg><span id="selT">Aucune table</span><svg class="i"><use href="#chev"/></svg></button>
+          <div class="menu-pop" id="pop"><button>Aucune table</button><button>users</button><button>orders</button></div>
+        </div>
+        <button class="btn2" id="mk">Créer une table</button>
+      </div>
+      <div class="sect">
+        <div class="sh"><svg class="i" style="width:15px"><use href="#check"/></svg>Tests<span class="sp"></span><button title="Add test" id="addTest"><svg class="i"><use href="#plus"/></svg></button><button><svg class="i"><use href="#chev"/></svg></button></div>
+        <div class="body" id="tests"></div>
+      </div>
+    </aside>
+    <div class="rz v" data-t="left"></div>
+
+    <section class="center">
+      <div class="panel editor">
+        <div class="tabs">
+          <div class="tab"><svg class="i" style="width:15px"><use href="#grid"/></svg>Query 1<button class="x" title="Close tab"><svg class="i" style="width:12px"><use href="#x"/></svg></button></div>
+          <div class="sp"></div>
+          <button class="run" id="run"><svg class="i"><use href="#play"/></svg>Run</button>
+        </div>
+        <div class="code">
+          <div class="gut" id="ln"></div>
+          <div class="surf">
+            <div class="cl-hl" id="cl"></div>
+            <pre id="hl" aria-hidden="true"></pre>
+            <textarea id="ed" spellcheck="false" autocomplete="off" aria-label="SQL editor"></textarea>
+          </div>
+          <div class="mm"><i></i></div>
+        </div>
+      </div>
+      <div class="rz h" data-t="results"></div>
+      <div class="panel results" id="results">
+        <div class="rt" role="tablist">
+          <button class="t on" data-p="p0">Results</button><button class="t" data-p="p1">Schema</button><button class="t" data-p="p2">Execution Plan</button><button class="t" data-p="p3">Console</button>
+          <span class="sp" style="flex:1"></span><button class="ib" style="width:26px;height:26px" id="collapse" title="Collapse"><svg class="i"><use href="#chev"/></svg></button>
+        </div>
+        <div class="pane on" id="p0"><table id="tbl"><thead><tr><th class="rn"></th></tr></thead><tbody></tbody></table></div>
+        <div class="pane" id="p1"><div class="sc" style="padding:10px 16px">id <small>INTEGER</small><br>prix <small>DECIMAL(10,2)</small><br>actif <small>BOOLEAN</small><br>initiale <small>CHAR(1)</small><br>nom <small>TEXT</small></div></div>
+        <div class="pane" id="p2"><div class="plan"><div style="--d:0"><span>SELECT</span> users</div><div style="--d:1"><span>FILTER</span> prix &gt;= 0</div><div style="--d:2"><span>SCAN</span> users · 150 rows</div></div></div>
+        <div class="pane" id="p3"><div class="log" id="log"><em>Ready.</em></div></div>
+      </div>
+    </section>
+
+    <div class="rz v" data-t="right"></div>
+    <aside class="panel right" id="right">
+      <div class="sh">Query History</div>
+      <div class="seg"><button class="on" data-h="h0">History</button><button data-h="h1">Schema</button></div>
+      <div id="h0"></div>
+      <div id="h1" class="sc" style="display:none">users<small>5 col.</small><br>orders<small>3 col.</small></div>
+    </aside>
+
+    <div class="rail r">
+      <button class="ib on" title="History"><svg class="i"><use href="#clock"/></svg></button>
+      <button class="ib" title="Outline"><svg class="i"><use href="#list"/></svg></button>
+      <button class="ib" title="Files"><svg class="i"><use href="#file"/></svg></button>
+      <button class="ib" title="Charts"><svg class="i"><use href="#chart"/></svg></button>
+      <button class="ib" title="Tables"><svg class="i"><use href="#grid"/></svg></button>
+      <button class="ib" title="Timeline"><svg class="i"><use href="#clock"/></svg></button>
+    </div>
+  </div>
+
+  <footer class="status">
+    <span><svg class="i g"><use href="#bolt"/></svg>Current connections: (1)</span>
+    <span><svg class="i"><use href="#link"/></svg>Result connections</span>
+    <i class="sp"></i>
+    <span><svg class="i"><use href="#branch"/></svg><span id="sb1">1</span></span>
+    <span id="sbCell">prix: 9.99</span>
+    <span><svg class="i"><use href="#rows"/></svg><span id="sbRows">Results: 150</span></span>
+  </footer>
+</div>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const ed=$('#ed'),hl=$('#hl'),ln=$('#ln'),cl=$('#cl');
+const DEFAULT="afficher tous les 'users' si $prix >= 0\nSELECT\n FROM 'users'\n    si  rorm\n    si $prix >= 0\nFROM Alan";
+const LH=21,PAD=12;
+let undo=[],redo=[];
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function paint(){
+  const t=ed.value;
+  hl.innerHTML=esc(t).replace(/(&[a-z]+;)|('[^'\n]*'?)|(\$\w+)|(\b\d+(?:\.\d+)?\b)|([A-Za-zÀ-ÿ_]+)/g,(m,e,s,v,n,w)=>{
+    if(e)return m;if(s)return`<span class="s">${m}</span>`;if(v)return`<span class="v">${m}</span>`;if(n)return`<span class="n">${m}</span>`;
+    if(/^(afficher|tous|les|si|SELECT|INSERT|UPDATE|DELETE)$/i.test(w))return`<span class="k1">${m}</span>`;
+    if(/^(FROM|WHERE|JOIN|ORDER|BY|LIMIT|GROUP)$/i.test(w))return`<span class="k2">${m}</span>`;return m});
+  hl.innerHTML+='\n';
+  caret();
+}
+function caret(){
+  const n=ed.value.split('\n').length,cur=ed.value.slice(0,ed.selectionStart).split('\n').length;
+  ln.innerHTML=Array.from({length:Math.max(n,6)},(_,i)=>`<div${i+1===cur?' class="a"':''}>${i+1}</div>`).join('');
+  ln.firstChild.style.marginTop=(PAD-ed.scrollTop)+'px';
+  cl.style.top=(PAD+(cur-1)*LH-ed.scrollTop)+'px';
+}
+ed.addEventListener('input',()=>{undo.push(ed._p??DEFAULT);redo=[];ed._p=ed.value;paint();upd()});
+['keyup','click','focus'].forEach(e=>ed.addEventListener(e,caret));
+ed.addEventListener('scroll',()=>{hl.scrollTop=ed.scrollTop;hl.scrollLeft=ed.scrollLeft;caret()});
+ed.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run()}
+  if(e.key==='Tab'){e.preventDefault();document.execCommand('insertText',false,'  ')}
+});
+function setCode(v){ed.value=v;ed._p=v;paint()}
+function upd(){$('#tUndo').disabled=!undo.length;$('#tRedo').disabled=!redo.length}
+$('#tUndo').onclick=()=>{if(!undo.length)return;redo.push(ed.value);setCode(undo.pop());upd()};
+$('#tRedo').onclick=()=>{if(!redo.length)return;undo.push(ed.value);setCode(redo.pop());upd()};
+$('#tClear').onclick=()=>{undo.push(ed.value);setCode('');upd();ed.focus()};
+$('#tFmt').onclick=()=>{undo.push(ed.value);setCode(ed.value.split('\n').map(l=>l.trim()).join('\n'));upd()};
+$('#tTerm').onclick=()=>tab('p3');
+setCode(DEFAULT);upd();
+
+/* results */
+const COLS=['id','prix','actif','initiale','nom'];
+let rows=[[1,9.99,'vrai','A','Alan']],sort={c:null,d:1};
+function render(){
+  const th=$('#tbl thead tr');th.innerHTML='<th class="rn"></th>'+COLS.map((c,i)=>`<th data-c="${i}" class="${sort.c===i?(sort.d>0?'asc':'desc'):''}">${c}<span class="so"><i></i><i></i></span></th>`).join('');
+  const r=[...rows];if(sort.c!==null)r.sort((a,b)=>(a[sort.c]>b[sort.c]?1:a[sort.c]<b[sort.c]?-1:0)*sort.d);
+  $('#tbl tbody').innerHTML=r.map((x,i)=>`<tr><td class="rn">${i+1}</td>${x.map((v,j)=>`<td data-c="${COLS[j]}">${v}</td>`).join('')}</tr>`).join('');
+  $$('#tbl th[data-c]').forEach(h=>h.onclick=()=>{const c=+h.dataset.c;sort=sort.c===c?{c,d:-sort.d}:{c,d:1};render()});
+  $$('#tbl td:not(.rn)').forEach(td=>td.onclick=()=>{$$('td.sel').forEach(x=>x.classList.remove('sel'));td.classList.add('sel');$('#sbCell').textContent=td.dataset.c+': '+td.textContent});
+  $('#sbRows').textContent='Results: '+Math.max(150,rows.length);
+}
+render();
+const hist=["afficher tous les 'users' si $prix >= 0"];
+function drawHist(){$('#h0').innerHTML=hist.map((h,i)=>`<button class="hi" data-i="${i}" title="${esc(h)}"><svg class="i" style="width:15px"><use href="#clock"/></svg><span>${esc(h)}</span></button>`).join('');
+  $$('.hi').forEach(b=>b.onclick=()=>{setCode(hist[b.dataset.i]);ed.focus()})}
+drawHist();
+function log(t){const l=$('#log');l.innerHTML+=`<br><b>✓</b> ${t}`}
+function run(){
+  const b=$('#run');if(b.classList.contains('busy'))return;b.classList.add('busy');b.querySelector('use').setAttribute('href','#gear');
+  const t0=performance.now();
+  setTimeout(()=>{
+    b.classList.remove('busy');b.querySelector('use').setAttribute('href','#play');
+    const first=ed.value.split('\n')[0].trim();
+    if(first&&hist[0]!==first){hist.unshift(first);if(hist.length>8)hist.pop();drawHist()}
+    if(rows.length<4)rows.push([rows.length+1,+(Math.random()*90+1).toFixed(2),Math.random()>.4?'vrai':'faux',String.fromCharCode(65+Math.random()*26|0),['Alan','Ada','Linus','Grace'][rows.length%4]]);
+    render();tab('p0');log(`Query executed in ${(performance.now()-t0+120|0)} ms <em>· ${rows.length} row(s)</em>`);
+  },480);
+}
+$('#run').onclick=run;$('#tRun').onclick=run;
+
+/* tabs */
+function tab(id){$$('.rt .t').forEach(t=>t.classList.toggle('on',t.dataset.p===id));$$('.pane').forEach(p=>p.classList.toggle('on',p.id===id));showRes()}
+$$('.rt .t').forEach(t=>t.onclick=()=>tab(t.dataset.p));
+function showRes(){$('#results').style.height=$('#results').dataset.h||'';$('#collapse').style.transform=''}
+$('#collapse').onclick=()=>{const r=$('#results'),c=r.dataset.c==='1';if(c){r.style.height=r.dataset.h||'';r.dataset.c=''}else{r.dataset.h=r.style.height;r.style.height='46px';r.style.minHeight='46px';r.dataset.c='1'}$('#collapse').style.transform=c?'':'rotate(180deg)'};
+$$('.seg button').forEach(b=>b.onclick=()=>{$$('.seg button').forEach(x=>x.classList.toggle('on',x===b));$('#h0').style.display=b.dataset.h==='h0'?'':'none';$('#h1').style.display=b.dataset.h==='h1'?'':'none'});
+
+/* left panel */
+$('#sel').onclick=e=>{e.stopPropagation();$('#pop').classList.toggle('show')};
+$$('#pop button').forEach(b=>b.onclick=()=>{$('#selT').textContent=b.textContent;$('#pop').classList.remove('show')});
+document.addEventListener('click',()=>$('#pop').classList.remove('show'));
+$$('.sh[data-fold]').forEach(h=>h.onclick=()=>{const t=$('#'+h.dataset.fold);h.classList.toggle('closed');t.style.display=h.classList.contains('closed')?'none':''});
+let tn=0;$('#addTest').onclick=()=>{tn++;$('#tests').innerHTML+=`<div class="hi" style="margin:0 0 4px"><svg class="i" style="width:14px"><use href="#bolt"/></svg><span>Test ${tn}</span></div>`};
+$('#mk').onclick=()=>{$('#selT').textContent='users'};
+$$('.rail .ib').forEach(b=>b.onclick=()=>{if(b.title==='Database'||b.title==='Outline'||b.title==='History'){$$('.rail:not(.r) .ib').slice(0,2).forEach(x=>x.classList.toggle('on',x===b))}});
+
+/* resizers */
+$$('.rz').forEach(z=>z.addEventListener('pointerdown',e=>{
+  z.setPointerCapture(e.pointerId);z.classList.add('drag');const t=z.dataset.t,x0=e.clientX,y0=e.clientY;
+  const el=$('#'+t),w0=el.offsetWidth,h0=el.offsetHeight;
+  const mv=ev=>{
+    if(t==='left')el.style.width=Math.min(360,Math.max(150,w0+ev.clientX-x0))+'px';
+    if(t==='right')el.style.width=Math.min(360,Math.max(140,w0-(ev.clientX-x0)))+'px';
+    if(t==='results'){el.style.height=Math.max(60,h0-(ev.clientY-y0))+'px';el.dataset.h=el.style.height;el.dataset.c=''}
+  };
+  const up=()=>{z.classList.remove('drag');z.removeEventListener('pointermove',mv);z.removeEventListener('pointerup',up)};
+  z.addEventListener('pointermove',mv);z.addEventListener('pointerup',up);
+}));
+</script>
+</body>
+</html>

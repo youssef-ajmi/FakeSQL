@@ -1,32 +1,33 @@
 :root {
   color-scheme: dark;
 
-  --bg: #1e1f22;
-  --bg-editor: #1e1f22;
-  --panel: #2b2d30;
-  --panel-alt: #25272b;
-  --toolbar: #2b2d30;
-  --border: #393b40;
-  --border-strong: #4e5157;
-  --text: #bcbec4;
-  --text-strong: #dfe1e5;
-  --text-muted: #8b8f96;
-  --text-dim: #6f737a;
-  --accent: #3574f0;
-  --accent-hover: #4a88c7;
-  --selection: #2e436e;
-  --hover: #2e3033;
-  --hover-strong: #393b40;
-  --green: #499c54;
-  --green-hover: #57ad63;
-  --red: #ff6b68;
-  --orange: #cf8e6d;
-  --purple: #c77dbb;
-  --cyan: #2aacb8;
-  --yellow: #d5b778;
+  /* FakeSQL Studio Pro palette — deep navy, blue accent */
+  --bg: #0a0f17;
+  --bg-editor: #0d141f;
+  --panel: #121a27;
+  --panel-alt: #0d141f;
+  --toolbar: #0e1520;
+  --border: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(255, 255, 255, 0.13);
+  --text: #dbe2ee;
+  --text-strong: #e7ecf4;
+  --text-muted: #8a94a8;
+  --text-dim: #5f6b80;
+  --accent: #2d7cff;
+  --accent-hover: #5aa2ff;
+  --selection: rgba(45, 124, 255, 0.32);
+  --hover: rgba(255, 255, 255, 0.05);
+  --hover-strong: rgba(255, 255, 255, 0.09);
+  --green: #3ddc84;
+  --green-hover: #5bea9d;
+  --red: #e5484d;
+  --orange: #ffd166;
+  --purple: #a78bfa;
+  --cyan: #4cc9f0;
+  --yellow: #ffd166;
 
-  --font-ui: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+  --font-ui: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Inter", Roboto, sans-serif;
+  --font-mono: "Cascadia Code", "JetBrains Mono", "SFMono-Regular", Consolas, ui-monospace, monospace;
 }
 
 * {
@@ -63,7 +64,7 @@ button {
 
 button:disabled {
   cursor: default;
-  opacity: 0.45;
+  opacity: 0.35;
 }
 
 code,
@@ -81,14 +82,14 @@ kbd {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #3f4247;
+  background: #22304a;
   border-radius: 5px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #565a60;
+  background: #2e4066;
   background-clip: content-box;
 }
 

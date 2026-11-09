@@ -1,21 +1,25 @@
-import { FileCode2, Plus, X } from "lucide-react";
+import { FileCode2, Loader2, Play, Plus, X } from "lucide-react";
 
 import type { QueryTab } from "../../lib/types";
 
 interface EditorTabsProps {
   tabs: QueryTab[];
   activeTabId: string;
+  running: boolean;
   onSelect: (id: string) => void;
   onClose: (id: string) => void;
   onNew: () => void;
+  onRun: () => void;
 }
 
 export function EditorTabs({
   tabs,
   activeTabId,
+  running,
   onSelect,
   onClose,
   onNew,
+  onRun,
 }: EditorTabsProps) {
   return (
     <div className="editor-tabs">
@@ -56,6 +60,16 @@ export function EditorTabs({
         <span className="dot-separator" />
         <span>UTF-8</span>
       </div>
+      <button
+        type="button"
+        className="tab-run"
+        title="Exécuter la requête (Ctrl+Enter)"
+        disabled={running}
+        onClick={onRun}
+      >
+        {running ? <Loader2 size={14} className="spin" /> : <Play size={13} fill="currentColor" />}
+        <span>{running ? "Exécution…" : "Run"}</span>
+      </button>
     </div>
   );
 }
