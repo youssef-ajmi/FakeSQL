@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FakeSQL – Apprenez les bases de données en français</title>
+<meta name="description" content="FakeSQL Studio : écrivez, validez et exécutez vos requêtes dans un langage inspiré du SQL, 100 % français. Vos tables restent de simples fichiers .txt.">
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#080c18; --surface:#0e1424; --ink:#f1f5ff; --muted:#8b97b5; --line:#1d2842;
+  --accent:#2f6df6; --accent-ink:#ffffff; --teal:#4dd4f0; --violet:#7c8cff;
+  --code-bg:#070a14; --code-ink:#f1f5ff; --code-dim:#6b7794;
+  --k:#5ad1f5; --s:#f5a623; --v:#9db4ff; --n:#5ad1f5;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background-color:var(--bg);background-image:linear-gradient(rgba(77,110,200,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(77,110,200,.08) 1px,transparent 1px);background-size:34px 34px;color:var(--ink);font:400 17px/1.6 Inter,system-ui,sans-serif}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--violet);outline-offset:3px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:Inter,system-ui,sans-serif;line-height:1.1;margin:0;letter-spacing:-.025em}
+.grad{background:linear-gradient(90deg,#4d8dff,#5ad1f5);-webkit-background-clip:text;background-clip:text;color:transparent}
+code,pre,.mono{font-family:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace}
+
+header{display:flex;align-items:center;justify-content:space-between;padding:20px 0}
+.brand{display:flex;align-items:center;gap:12px;font:800 22px Inter,sans-serif;text-decoration:none}
+.brand img{width:40px;height:40px;border-radius:10px}
+nav{display:flex;gap:22px;font-weight:500}
+nav a{text-decoration:none;color:var(--muted)}
+nav a:hover{color:var(--ink)}
+
+.hero{display:grid;grid-template-columns:1fr 1.1fr;gap:48px;align-items:center;padding:56px 0 72px}
+.hero h1{font-size:clamp(38px,5.4vw,64px);font-weight:800}
+.hero p.lead{font-size:20px;color:var(--muted);max-width:30em;margin:22px 0 30px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:13px 22px;border-radius:10px;font-weight:600;text-decoration:none;border:1px solid #4f86ff;background:linear-gradient(180deg,#3b7bff,#2457d6);color:#fff;box-shadow:0 10px 28px -12px #2f6df6}
+.btn:hover{filter:brightness(1.08)}
+.btn.alt{background:var(--surface);color:var(--ink);border-color:var(--line);box-shadow:none}
+.btn.alt:hover{border-color:var(--ink)}
+.btn[disabled]{opacity:.55;pointer-events:none}
+.facts{margin:18px 0 0;color:var(--muted);font-size:15px}
+
+/* editor window: the memorable element */
+.win{background:var(--code-bg);color:var(--code-ink);border-radius:16px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(20,23,63,.55);border:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:7px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08);color:var(--code-dim);font-size:13px}
+.bar i{width:11px;height:11px;border-radius:50%;background:#3a3f78;display:block}
+.bar span{margin-left:10px}
+.win pre{margin:0;padding:20px 22px;font-size:14.5px;line-height:1.75;overflow-x:auto}
+.k{color:var(--k)}.s{color:var(--s)}.v{color:var(--v)}.n{color:var(--n)}.c{color:var(--code-dim)}
+.out{border-top:1px solid rgba(255,255,255,.08);padding:14px 22px 20px;overflow-x:auto}
+.out table{border-collapse:collapse;font:400 13.5px "JetBrains Mono",monospace;min-width:100%}
+.out th,.out td{text-align:left;padding:4px 20px 4px 0;white-space:nowrap}
+.out th{color:var(--code-dim);font-weight:500}
+.out .ok{color:var(--k);font-size:13px;margin:0 0 8px}
+
+section{padding:64px 0;border-top:1px solid var(--line)}
+section h2{font-size:clamp(30px,4vw,42px);font-weight:700;margin-bottom:14px}
+section .sub{color:var(--muted);max-width:36em;margin:0 0 36px}
+
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
+.pillars h3{font-size:22px;margin-bottom:8px}
+.pillars p{margin:0;color:var(--muted)}
+
+.ref{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.ref article{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px;min-width:0}
+.ref h3{font-size:18px;margin-bottom:10px}
+.ref pre{margin:0;font-size:13.5px;line-height:1.7;overflow-x:auto;color:var(--ink)}
+.ref .tag{color:var(--violet);font-weight:500}
+
+.dl{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.dl .card{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:26px;display:flex;flex-direction:column;gap:6px}
+.dl .card.me{border-color:var(--accent)}
+.dl .card.todo{opacity:.75}
+.dl h3{font-size:24px}
+.dl .meta{color:var(--muted);font-size:14.5px;margin-bottom:14px}
+.dl .btn{justify-content:center;margin-top:auto}
+.note{margin-top:22px;color:var(--muted);font-size:15px}
+
+details{border-bottom:1px solid var(--line);padding:18px 0}
+summary{cursor:pointer;font:700 19px Inter,sans-serif;list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::after{content:"+";color:var(--violet);font-size:24px;line-height:1}
+details[open] summary::after{content:"–"}
+details p{margin:12px 0 0;color:var(--muted);max-width:44em}
+
+footer{border-top:1px solid var(--line);padding:32px 0 48px;color:var(--muted);font-size:15px;display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between}
+footer a{text-decoration:none}footer a:hover{text-decoration:underline}
+
+.steps{display:flex;flex-wrap:wrap;gap:12px;padding:0 0 56px;margin:0;list-style:none}
+.steps li{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 16px;font-weight:500;font-size:15px}
+.steps b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:6px;background:#5b4be0;color:#fff;font-size:12px}
+.types{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:28px 0 0}
+.types div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font:500 13px "JetBrains Mono",monospace;color:var(--s)}
+.types strong{display:block;color:var(--teal);font-size:15px;margin-bottom:2px}
+.keys{display:flex;flex-wrap:wrap;gap:10px 22px;margin:22px 0 0;color:var(--muted);font-size:14px}
+kbd{font:500 12.5px "JetBrains Mono",monospace;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:3px 8px;color:var(--ink);margin-right:6px}
+@media (max-width:860px){
+  .types{grid-template-columns:repeat(2,1fr)}
+  .hero{grid-template-columns:1fr;padding-top:24px}
+  .pillars,.dl,.ref{grid-template-columns:1fr}
+  nav{display:none}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><img alt="" src="icon.png">
+      FakeSQL</a>
+    <nav aria-label="Navigation">
+      <a href="#syntaxe">Syntaxe</a>
+      <a href="#telecharger">Télécharger</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <div class="hero">
+      <div>
+        <h1>L’éditeur <span class="grad">FakeSQL</span></h1>
+        <p class="lead">Écrivez, validez et exécutez vos requêtes en français dans un mini-IDE léger. Vos tables restent de simples fichiers <code>.txt</code> : lisibles, portables, versionnables.</p>
+        <div class="cta">
+          <a class="btn" id="main-dl" href="https://github.com/youssef-ajmi/FakeSQL/releases/latest">Télécharger pour Windows</a>
+          <a class="btn alt" href="#syntaxe">Voir la syntaxe</a>
+        </div>
+        <p class="facts">Gratuit · Ultra-léger · Fonctionne 100 % hors ligne</p>
+      </div>
+
+      <div class="win" role="img" aria-label="Exemple de requêtes dans l’éditeur et leur résultat">
+        <div class="bar"><i></i><i></i><i></i><span>requetes.fsql</span></div>
+<pre><span class="c"># Créer une table</span>
+<span class="k">creer fichier</span> <span class="s">'users'</span> ( <span class="v">$id</span> : <span class="n">entier</span> , <span class="v">$name</span> : <span class="n">chaine</span> , <span class="v">$age</span> : <span class="n">entier</span> )
+
+<span class="k">inserer dans</span> <span class="s">'users'</span> : <span class="v">$name</span> = <span class="s">'Ada'</span> , <span class="v">$age</span> = 36
+<span class="k">inserer dans</span> <span class="s">'users'</span> : <span class="v">$name</span> = <span class="s">'Alan'</span> , <span class="v">$age</span> = 41
+
+<span class="k">afficher tous les</span> <span class="s">'users'</span> <span class="k">si</span> <span class="v">$age</span> &gt; 25</pre>
+        <div class="out">
+          <p class="ok">2 lignes trouvées</p>
+          <table>
+            <tr><th>id</th><th>name</th><th>age</th></tr>
+            <tr><td>1</td><td>Ada</td><td>36</td></tr>
+            <tr><td>2</td><td>Alan</td><td>41</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <ol class="steps" aria-label="Prise en main">
+      <li><b>1</b>Ouvrir un dossier</li>
+      <li><b>2</b>Créer une table</li>
+      <li><b>3</b>Insérer vos données</li>
+      <li><b>4</b>Exécuter</li>
+    </ol>
+
+    <section>
+      <div class="pillars">
+        <div><h3>Ça se lit tout seul</h3><p>Les mots-clés sont des verbes français : afficher, inserer, modifier, effacer. Pas de jargon anglais à mémoriser avant de comprendre l’idée.</p></div>
+        <div><h3>Léger et immédiat</h3><p>Une installation de quelques méga-octets. Pas de serveur, pas de configuration : vous écrivez une requête, vous voyez le résultat.</p></div>
+        <div><h3>Pensé pour apprendre</h3><p>Des types simples (entier, reel, booleen, caractere, chaine) et des règles claires. Parfait en classe, en TP ou pour débuter seul.</p></div>
+      </div>
+    </section>
+
+    <section id="syntaxe">
+      <h2>Toute la syntaxe, sur une page</h2>
+      <p class="sub">Six commandes suffisent pour créer une table, la remplir et la faire vivre. Les mots-clés ne sont pas sensibles à la casse.</p>
+      <div class="ref">
+        <article><h3>Afficher</h3>
+<pre>afficher tous les 'users'
+afficher tous les 'users' si $age &gt; 25</pre></article>
+        <article><h3>Insérer</h3>
+<pre>inserer dans 'users' :
+  $name = 'Ada' , $password = '1234'</pre></article>
+        <article><h3>Modifier</h3>
+<pre>modifier 'users' si $id = 1 :
+  $name = 'Alan'</pre></article>
+        <article><h3>Effacer</h3>
+<pre>effacer de 'users' si $age &gt;= 60</pre></article>
+        <article><h3>Créer une table</h3>
+<pre>creer fichier 'users' (
+  $id : entier ,
+  $prix : reel ,
+  $actif : booleen
+)</pre></article>
+        <article><h3>Supprimer ou renommer</h3>
+<pre>supprimer fichier 'users'
+renommer fichier 'users' en 'clients'</pre></article>
+      </div>
+      <div class="types" aria-label="Les 5 types">
+        <div><strong>entier</strong>12</div>
+        <div><strong>reel</strong>3.5</div>
+        <div><strong>booleen</strong>vrai | faux</div>
+        <div><strong>caractere</strong>'A'</div>
+        <div><strong>chaine</strong>'texte'</div>
+      </div>
+      <p class="keys"><span><kbd>Ctrl + O</kbd>Ouvrir un dossier</span><span><kbd>Ctrl + N</kbd>Nouvelle requête</span><span><kbd>Ctrl + Entrée</kbd>Exécuter</span><span><kbd>Ctrl + W</kbd>Fermer l’onglet</span></p>
+      <p class="note">Opérateurs : <code>=</code> <code>&lt;&gt;</code> <code>!=</code> <code>&lt;</code> <code>&lt;=</code> <code>&gt;</code> <code>&gt;=</code>, combinables avec <code>et</code> / <code>ou</code>. Commentaires avec <code>#</code> ou <code>//</code>. Plusieurs requêtes : séparez-les par <code>;</code> ou un retour à la ligne.</p>
+    </section>
+
+    <section id="telecharger">
+      <h2>Télécharger FakeSQL</h2>
+      <p class="sub">Version 0.1.0 · Gratuit. Choisissez votre système.</p>
+      <div class="dl">
+        <div class="card" data-os="windows"><h3>Windows</h3><div class="meta">Windows 10 et 11 · .msi / .exe</div><a class="btn" href="https://github.com/youssef-ajmi/FakeSQL/releases/latest">Télécharger</a></div>
+        <div class="card todo" data-os="mac"><h3>macOS</h3><div class="meta">Version à venir · .dmg</div><span class="btn" aria-disabled="true">Bientôt</span></div>
+        <div class="card todo" data-os="linux"><h3>Linux</h3><div class="meta">Version à venir · AppImage / .deb</div><span class="btn" aria-disabled="true">Bientôt</span></div>
+      </div>
+      <p class="note">Votre navigateur ou votre système peut afficher un avertissement au premier lancement tant que l’application n’est pas signée. Pour compiler depuis les sources, consultez le <a href="https://github.com/youssef-ajmi/FakeSQL#readme">README du projet</a>.</p>
+    </section>
+
+    <section id="faq">
+      <h2>Questions fréquentes</h2>
+      <details><summary>Est-ce un remplaçant de SQL ?</summary><p>Non. C’est un langage plus simple, pensé pour découvrir les notions de tables, de lignes et de conditions en français. Une fois ces idées acquises, passer à SQL devient naturel.</p></details>
+      <details><summary>Où sont stockées mes données ?</summary><p>Dans le dossier workspace que vous ouvrez, sous forme de simples fichiers <code>.txt</code> : un fichier <code>manager.txt</code> et un fichier par table. Rien n’est envoyé sur Internet.</p></details>
+      <details><summary>Puis-je utiliser le langage en dehors de l’éditeur ?</summary><p>Pour l’instant, le compilateur est intégré à l’éditeur. Une version en ligne de commande est prévue.</p></details>
+      <details><summary>Quelles fonctions seront ajoutées ?</summary><p>Le choix des colonnes à afficher, le tri, le comptage et les jointures sont à l’étude. Dites-nous ce dont vous avez besoin.</p></details>
+      <details><summary>Je suis enseignant : puis-je l’utiliser en classe ?</summary><p>Oui, librement. Il s’installe en quelques secondes et fonctionne hors ligne, même sur des postes limités.</p></details>
+    </section>
+  </main>
+
+  <footer>
+    <span>© 2026 FakeSQL</span>
+    <span><a href="https://github.com/youssef-ajmi/FakeSQL">Projet sur GitHub</a> · <a href="https://github.com/youssef-ajmi/FakeSQL/issues/new">Signaler un bug</a> · <span>Compilé avec Rust + Tauri</span></span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var ua=(navigator.userAgent||"")+" "+(navigator.platform||"");
+  var os=/Mac/i.test(ua)?"mac":/Linux|X11/i.test(ua)&&!/Android/i.test(ua)?"linux":"windows";
+  var names={windows:"Windows",mac:"macOS",linux:"Linux"};
+  var btn=document.getElementById("main-dl");
+  if(btn){btn.textContent="Télécharger pour "+names[os];}
+  var card=document.querySelector('.card[data-os="'+os+'"]');
+  if(card){card.classList.add("me");}
+})();
+</script>
+</body>
+</html>
