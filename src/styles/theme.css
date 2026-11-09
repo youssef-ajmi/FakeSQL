@@ -1,0 +1,107 @@
+:root {
+  color-scheme: dark;
+
+  --bg: #1e1f22;
+  --bg-editor: #1e1f22;
+  --panel: #2b2d30;
+  --panel-alt: #25272b;
+  --toolbar: #2b2d30;
+  --border: #393b40;
+  --border-strong: #4e5157;
+  --text: #bcbec4;
+  --text-strong: #dfe1e5;
+  --text-muted: #8b8f96;
+  --text-dim: #6f737a;
+  --accent: #3574f0;
+  --accent-hover: #4a88c7;
+  --selection: #2e436e;
+  --hover: #2e3033;
+  --hover-strong: #393b40;
+  --green: #499c54;
+  --green-hover: #57ad63;
+  --red: #ff6b68;
+  --orange: #cf8e6d;
+  --purple: #c77dbb;
+  --cyan: #2aacb8;
+  --yellow: #d5b778;
+
+  --font-ui: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--text);
+  background: var(--bg);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+select {
+  font-family: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+code,
+kbd {
+  font-family: var(--font-mono);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3f4247;
+  border-radius: 5px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #565a60;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+.spin {
+  animation: fakesql-spin 1s linear infinite;
+}
+
+@keyframes fakesql-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
