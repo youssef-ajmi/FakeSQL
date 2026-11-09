@@ -150,7 +150,10 @@ export default function App() {
                     )}
                   </>
                 ) : (
-                  <WelcomeScreen onOpenFolder={() => void openFolder()} />
+                  <WelcomeScreen
+                    onOpenFolder={() => void openFolder()}
+                    onSyntax={() => setShowSyntax(true)}
+                  />
                 )}
               </Panel>
 
