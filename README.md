@@ -15,10 +15,9 @@
 
 ## 🚀 Télécharger
 
-Installateurs Windows (64 bits) — voir [Releases](https://github.com/youssef-ajmi/FakeSQL/releases) :
+Installateur Windows (64 bits) — voir [Releases](https://github.com/youssef-ajmi/FakeSQL/releases) :
 
-- `FakeSQL Studio_0.1.0_x64_en-US.msi` — installation classique (WiX)
-- `FakeSQL Studio_0.1.0_x64-setup.exe` — installation NSIS
+- `FakeSQL Studio_0.1.0_x64_en-US.msi` — installation classique (WiX), signé Authenticode
 
 ## 🗣️ Le langage en un coup d'œil
 

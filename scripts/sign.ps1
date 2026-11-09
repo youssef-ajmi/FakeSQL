@@ -38,7 +38,7 @@ if (-not $signTool) {
   Write-Warning "signtool.exe introuvable (Windows SDK requis). Artefact non signes."
   exit 1
 }
-$signTool = $signTool.Source
+if ($signTool -is [System.Management.Automation.CommandInfo]) { $signTool = $signTool.Source }
 
 # --- select certificate ------------------------------------------------------
 $pfx = $env:FAKESQL_SIGN_PFX
