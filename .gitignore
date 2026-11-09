@@ -3,6 +3,7 @@
 /src-tauri/gen/schemas
 /node_modules
 /dist
+/icon.png
 *.log
 .DS_Store
 .env
