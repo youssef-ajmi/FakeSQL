@@ -61,6 +61,17 @@ cd src-tauri && cargo test
 npm run tauri build
 ```
 
+## 🔐 Signature du code
+
+Les binaires Windows (`fakesql-studio.exe`, `.msi`, `.exe` NSIS) sont signés avec Authenticode (SHA-256 + horodatage RFC3161) via `npm run sign` après le build :
+
+```bash
+npm run tauri build && npm run sign
+```
+
+- **Machine de dev** : un certificat auto-signé `CN=FakeSQL Studio` est utilisé, importé dans les magasins `Root` et `TrustedPublisher` locaux — plus de message « éditeur inconnu » sur cette machine.
+- **Distribution publique** : pour que le certificat soit reconnu par tous (et que SmartScreen n'affiche plus d'avertissement), il faut un certificat de signature de code délivré par une autorité (recommandé : [Azure Trusted Signing](https://learn.microsoft.com/azure/trusted-signing/overview) ~9,99 $/mois, ou un certificat OV/EV de Sectigo, DigiCert, Certum…). Définissez alors `FAKESQL_SIGN_PFX` et `FAKESQL_SIGN_PWD` avant `npm run sign`.
+
 ## 📁 Structure
 
 ```
